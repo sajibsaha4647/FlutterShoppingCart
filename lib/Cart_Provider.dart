@@ -2,9 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'DbHelper.dart';
 class CartProvider extends ChangeNotifier{
 
-
+  DBHelper db = DBHelper() ;
   int _counter = 0 ;
   int get counter => _counter;
 

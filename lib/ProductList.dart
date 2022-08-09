@@ -1,6 +1,10 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_shopping_cart/Cart_Provider.dart';
+import 'package:flutter_shopping_cart/Cartmodel.dart';
+import 'package:flutter_shopping_cart/Utils.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_shopping_cart/DbHelper.dart';
 class ProductList extends StatefulWidget {
   const ProductList({Key? key}) : super(key: key);
 
@@ -38,8 +42,18 @@ class _ProductListState extends State<ProductList> {
     'https://media.istockphoto.com/photos/fruit-background-picture-id529664572?s=612x612',
   ];
 
+  DBHelper? dbHelper = DBHelper();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final cartProvider= Provider.of<CartProvider>(context) ;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -48,10 +62,14 @@ class _ProductListState extends State<ProductList> {
           actions: [
             Center(
               child: Badge(
-                badgeContent: Text(
-                  "0",
-                  style: TextStyle(color: Colors.white),
-                ),
+                badgeContent: Consumer<CartProvider>(
+                builder: (context,val,child){
+                  return Text(
+                    val.getcounter().toString(),
+                    style: TextStyle(color: Colors.white),
+                  );
+                },
+        ),
                 animationDuration: Duration(microseconds: 300),
                 child: Icon(Icons.shopping_cart),
               ),
@@ -113,18 +131,44 @@ class _ProductListState extends State<ProductList> {
                                           ),
                                           Align(
                                             alignment: Alignment.centerRight,
-                                            child: Container(
-                                              height: 35,
-                                              width: 100,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.green,
-                                                  borderRadius: BorderRadius.circular(10)
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  "Added to cart",
-                                                  style: TextStyle(
-                                                      color: Colors.white),
+                                            child: InkWell(
+                                              onTap: (){
+                                                dbHelper!.insert(
+                                                  Cart(id: index,
+                                                      productId: (index+1).toString(),
+                                                      productName: productName[index].toString(),
+                                                      initialPrice: productPrice[index],
+                                                      productPrice: productPrice[index],
+                                                      quantity: 1,
+                                                      unitTag: productUnit[index].toString(),
+                                                      image: productImage[index].toString())
+                                                ).then((value) {
+                                                  print(value);
+                                                  print("success");
+                                                  cartProvider.addTotalprice(double.parse(productPrice[index].toString()));
+                                                  cartProvider.addCounter();
+
+                                                  final snackBar = SnackBar(backgroundColor: Colors.green,content: Text('Product is added to cart'), duration: Duration(seconds: 1),);
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                }).onError((error, stackTrace) {
+                                                  print(error);
+                                                  print("error");
+                                                  // Utils.Toasts("Cart Did not added !");
+                                                });
+                                              },
+                                              child: Container(
+                                                height: 35,
+                                                width: 100,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.green,
+                                                    borderRadius: BorderRadius.circular(10)
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Added to cart",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
                                                 ),
                                               ),
                                             ),
