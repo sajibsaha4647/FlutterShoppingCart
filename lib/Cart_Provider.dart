@@ -20,7 +20,6 @@ class CartProvider extends ChangeNotifier{
    Future<List<Cart>> getCartListData()async{
      _cart = db.getCartDatabase();
      return _cart ;
-
    }
 
 
