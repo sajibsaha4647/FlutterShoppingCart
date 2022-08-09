@@ -5,6 +5,9 @@ import 'package:flutter_shopping_cart/Cartmodel.dart';
 import 'package:flutter_shopping_cart/Utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_shopping_cart/DbHelper.dart';
+
+import 'CartScreen.dart';
+
 class ProductList extends StatefulWidget {
   const ProductList({Key? key}) : super(key: key);
 
@@ -51,8 +54,7 @@ class _ProductListState extends State<ProductList> {
 
   @override
   Widget build(BuildContext context) {
-
-    final cartProvider= Provider.of<CartProvider>(context) ;
+    final cartProvider = Provider.of<CartProvider>(context);
 
     return SafeArea(
       child: Scaffold(
@@ -60,20 +62,25 @@ class _ProductListState extends State<ProductList> {
           centerTitle: true,
           title: Text("Product List"),
           actions: [
-            Center(
-              child: Badge(
-                badgeContent: Consumer<CartProvider>(
-                builder: (context,val,child){
-                  return Text(
-                    val.getcounter().toString(),
-                    style: TextStyle(color: Colors.white),
-                  );
-                },
-        ),
-                animationDuration: Duration(microseconds: 300),
-                child: Icon(Icons.shopping_cart),
-              ),
-            ),
+           InkWell(
+             onTap: (){
+               Navigator.push(context, MaterialPageRoute(builder: (_)=>CartScreen()));
+             },
+            child: Center(
+               child: Badge(
+                 badgeContent: Consumer<CartProvider>(
+                   builder: (context, val, child) {
+                     return Text(
+                       val.getcounter().toString(),
+                       style: TextStyle(color: Colors.white),
+                     );
+                   },
+                 ),
+                 animationDuration: Duration(microseconds: 300),
+                 child: Icon(Icons.shopping_cart),
+               ),
+             ),
+           ),
             SizedBox(
               width: 20,
             )
@@ -108,8 +115,10 @@ class _ProductListState extends State<ProductList> {
                                     ),
                                     Expanded(
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             productName[index].toString(),
@@ -123,7 +132,8 @@ class _ProductListState extends State<ProductList> {
                                               productUnit[index].toString() +
                                                   " " +
                                                   "\$" +
-                                                  productPrice[index].toString(),
+                                                  productPrice[index]
+                                                      .toString(),
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold)),
                                           SizedBox(
@@ -132,24 +142,45 @@ class _ProductListState extends State<ProductList> {
                                           Align(
                                             alignment: Alignment.centerRight,
                                             child: InkWell(
-                                              onTap: (){
-                                                dbHelper!.insert(
-                                                  Cart(id: index,
-                                                      productId: (index+1).toString(),
-                                                      productName: productName[index].toString(),
-                                                      initialPrice: productPrice[index],
-                                                      productPrice: productPrice[index],
-                                                      quantity: 1,
-                                                      unitTag: productUnit[index].toString(),
-                                                      image: productImage[index].toString())
-                                                ).then((value) {
+                                              onTap: () {
+                                                dbHelper!
+                                                    .insert(Cart(
+                                                        id: index,
+                                                        productId: (index + 1)
+                                                            .toString(),
+                                                        productName:
+                                                            productName[index]
+                                                                .toString(),
+                                                        initialPrice:
+                                                            productPrice[index],
+                                                        productPrice:
+                                                            productPrice[index],
+                                                        quantity: 1,
+                                                        unitTag:
+                                                            productUnit[index]
+                                                                .toString(),
+                                                        image:
+                                                            productImage[index]
+                                                                .toString()))
+                                                    .then((value) {
                                                   print(value);
                                                   print("success");
-                                                  cartProvider.addTotalprice(double.parse(productPrice[index].toString()));
+                                                  cartProvider.addTotalprice(
+                                                      double.parse(
+                                                          productPrice[index]
+                                                              .toString()));
                                                   cartProvider.addCounter();
 
-                                                  final snackBar = SnackBar(backgroundColor: Colors.green,content: Text('Product is added to cart'), duration: Duration(seconds: 1),);
-                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                  final snackBar = SnackBar(
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                    content: Text(
+                                                        'Product is added to cart'),
+                                                    duration:
+                                                        Duration(seconds: 1),
+                                                  );
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(snackBar);
                                                 }).onError((error, stackTrace) {
                                                   print(error);
                                                   print("error");
@@ -161,8 +192,9 @@ class _ProductListState extends State<ProductList> {
                                                 width: 100,
                                                 decoration: BoxDecoration(
                                                     color: Colors.green,
-                                                    borderRadius: BorderRadius.circular(10)
-                                                ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
                                                 child: Center(
                                                   child: Text(
                                                     "Added to cart",

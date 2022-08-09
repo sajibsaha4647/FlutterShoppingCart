@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Cartmodel.dart';
 import 'DbHelper.dart';
 class CartProvider extends ChangeNotifier{
 
@@ -12,6 +13,17 @@ class CartProvider extends ChangeNotifier{
 
   double _totalPrice = 0.0 ;
   double get totalPrice => _totalPrice;
+
+  late Future<List<Cart>> _cart ;
+   Future<List<Cart>> get cart => _cart ;
+
+   Future<List<Cart>> getCartListData()async{
+     _cart = db.getCartDatabase();
+     return _cart ;
+
+   }
+
+
 
 
   void _setPrefItems()async{
