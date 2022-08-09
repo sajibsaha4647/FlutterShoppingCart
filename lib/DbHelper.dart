@@ -21,12 +21,25 @@ class BdHelper {
     var db = await openDatabase(path, version: 1, onCreate: _onCreate);
     return db;
   }
-  // .execute('CREATE TABLE cart (id INTEGER PRIMARY KEY ,
-  //                productId VARCHAR UNIQUE,productName TEXT,initialPrice INTEGER,
-  //                  productPrice INTEGER , quantity INTEGER, unitTag TEXT , image TEXT )');
+
 
   _onCreate(Database db, int version) async {
     await db.execute(
         'CREATE TABLE cart(id INTEGER PRIMARY KEY, productId VARCHAR UNIQUE, productName TEXT, initialPrice INTEGER,productPrice INTEGER, quantity INTEGER,unitTag TEXT, image TEXT)');
   }
+
+
+  Future<Cart> insertcart( Cart cart ) async{
+
+    var clientDb = await db ;
+    await clientDb?.insert("cart", cart.toMap());
+    return cart ;
+  }
+
+
+
+
+
+
+
 }
