@@ -102,7 +102,6 @@ class _CartScreenState extends State<CartScreen> {
                                                   ),
                                                   InkWell(
                                                       onTap: () {
-                                                        print("object");
                                                         dbHelper!.delete(snapshot.data![index].id!);
                                                         cartProvider.removeCounter();
                                                       },
