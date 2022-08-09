@@ -50,6 +50,17 @@ class DBHelper  {
   }
 
 
+  Future<int> updatedQuentity(Cart cart)async{
+    var dbClient = await db ;
+    return await dbClient!.update(
+        'cart',
+      cart.toMap(),
+      where: 'id= ?',
+      whereArgs: [cart.id]
+    );
+  }
+
+
 
 
 
